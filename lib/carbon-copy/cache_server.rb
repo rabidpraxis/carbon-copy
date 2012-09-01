@@ -1,9 +1,6 @@
 require 'socket'
 require 'open-uri'
 require 'openssl'
-require 'pry'
-require 'pp'
-require 'webrick/ssl'
 require 'carbon-copy/http_cacher'
 
 module CarbonCopy
