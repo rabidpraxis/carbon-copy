@@ -8,6 +8,7 @@ module CarbonCopy
 
     def run(port)
       webserver = TCPServer.new('127.0.0.1', port)
+      puts "Running Carbon Copy on localhost port #{port}"
       while (session = webserver.accept)
         Thread.new(session, &method(:handle))
       end
