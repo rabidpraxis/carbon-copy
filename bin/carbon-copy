@@ -2,10 +2,12 @@
 require 'optparse'
 require 'carbon-copy'
 
+server = CarbonCopy::CacheServer.new
+
 opts = OptionParser.new do |opts|
   opts.banner = "Carbon Copy: Cache them RESTs"
   opts.on("-p", "--port Port", "Port to run server") do |v|
-    CarbonCopy::CacheServer.new.run(v)
+    server.run(v)
   end
 end
 opts.parse!
