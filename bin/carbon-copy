@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require 'carbon-copy'
+
+opts = OptionParser.new do |opts|
+  opts.banner = "Carbon Copy: Cache them RESTs"
+  opts.on("-p", "--port Port", "Port to run server") do |v|
+    CarbonCopy::CacheServer.new.run(v)
+  end
+end
+opts.parse!
+
+uri = ARGV.shift
+
+if uri.to_s.strip.empty?
+  puts opts
+  exit 1
+end
