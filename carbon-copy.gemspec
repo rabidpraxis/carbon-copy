@@ -5,6 +5,9 @@ Gem::Specification.new do |gem|
   gem.authors = ["Kevin Webster"]
   gem.email   = ["me@kdoubleyou.com"]
 
+  gem.description = "easily cache them REST calls"
+  gem.summary     = "REST cache"
+
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- spec/*`.split("\n")
   gem.name          = "carbon-copy"
