@@ -17,27 +17,32 @@ module CarbonCopy
     def parse_request(session)
       request = session.readline
 
-      parsed = {}
+      p = {}
       #---  Initial host/uri information  -------------------------------------
-      parsed[:verb]    = request[/^\w+/]
-      parsed[:url]     = request[/^#{parsed[:verb]}\s+\/(\S+)/, 1]
-      parsed[:host]    = request[/^#{parsed[:verb]}\s+\/([^\/ ]+)/, 1]
-      parsed[:version] = request[/HTTP\/(1\.\d)\s*$/, 1]
-      parsed[:uri]     = request[/^#{parsed[:verb]}\s+\/#{parsed[:host]}(\S+)\s+HTTP\/#{parsed[:version]}/, 1] || '/'
+      p[:verb]    = request.slice!(/^\w+\s/).strip
+      p[:host]    = request.slice!(/^\/[^\/: ]+/)[1..-1]
+      p[:port]    = request.slice!(/^:(\S+)/)
 
-      uri = URI::parse(parsed[:uri])
-      parsed[:request_str] = "#{parsed[:verb]} #{uri.path}?#{uri.query} HTTP/#{parsed[:version]}\r"
+      p[:port]    = ( p[:port].nil? ) ? '80' : p[:port][1..-1] # Remove the colon
+
+      p[:path]    = request.slice!(/^(\S)+/)
+      p[:version] = request[/HTTP\/(1\.\d)\s*$/, 1]
+      p[:url]     = "#{p[:host]}#{p[:path]}"
+      p[:uri]     = "#{p[:path] || '/'}"
+
+      uri = URI::parse(p[:uri])
+      p[:request_str] = "#{p[:verb]} #{uri.path}?#{uri.query} HTTP/#{p[:version]}\r"
 
       #---  Header and final response text  -----------------------------------
-      parsed[:headers] = parse_headers(session)
+      p[:headers] = parse_headers(session)
       
       #---  Update header info  -----------------------------------------------
-      parsed[:headers]["Host"]   = parsed[:host]
+      p[:headers]["Host"] = p[:host]
 
-      parsed[:header_str] = parsed[:headers].map{|a, b| "#{a}: #{b}"}.join("\r\n")
-      parsed[:response] = "#{parsed[:request_str]}\n#{parsed[:header_str]}\r\n\r\n"
+      p[:header_str] = p[:headers].map{|a, b| "#{a}: #{b}"}.join("\r\n")
+      p[:response] = "#{p[:request_str]}\n#{p[:header_str]}\r\n\r\n"
 
-      parsed
+      p
     end
     
     def parse_headers(request)
