@@ -47,10 +47,20 @@ describe CarbonCopy::CacheServer do
       specify { req[:uri].should  eq('/') }
     end
 
+    describe 'host with get string' do
+      let(:request) { create_host_IO("POST /fazebook.com/google?p=test HTTP/1.1\n") }
+
+      specify { req[:verb].should        eq('POST') }
+      specify { req[:port].should        eq('80') }
+      specify { req[:url].should         eq('fazebook.com/google?p=test') }
+      specify { req[:request_str].should eq("POST /google?p=test HTTP/1.1\r") }
+    end
+
     describe 'host with path' do
       let(:request) { create_host_IO("GET /apple.com/google/face/ HTTP/1.1\n") }
 
-      specify { req[:verb].should        eq("GET") }
+      specify { req[:verb].should        eq('GET') }
+      specify { req[:port].should        eq('80') }
       specify { req[:url].should         eq('apple.com/google/face/') }
       specify { req[:version].should     eq('1.1') }
       specify { req[:host].should        eq('apple.com') }
