@@ -31,53 +31,41 @@ describe CarbonCopy::CacheServer do
     let(:rs) { CarbonCopy::CacheServer.new }
     let(:req) { rs.parse_request(request) }
     
-    describe 'host with path' do
-      let(:request) { 
-        req = StringIO.new << "GET /apple.com/google/face/ HTTP/1.1\n"
-        req.rewind 
-        req
-      }
-
-      it 'verb' do
-        req[:verb].should eq("GET")
-      end
-
-      it 'url with path' do
-        req[:url].should eq('apple.com/google/face/')
-      end
-
-      it 'version' do
-        req[:version].should eq('1.1')
-      end
-
-      it 'host' do
-        req[:host].should eq('apple.com')
-      end
-
-      it 'uri' do
-        req[:uri].should eq('/google/face/')
-      end
-
-      it 'request_str' do
-        req[:request_str].should eq("GET /google/face/? HTTP/1.1\r")
-      end
-    end
-
     describe 'just host' do
-      let(:request) { 
-        req = StringIO.new << "GET /apple.com HTTP/1.1\n"
-        req.rewind 
-        req
-      }
-      it 'host' do
-        req[:host].should eq('apple.com')
-      end
+      let(:request) { create_host_IO("GET /apple.com HTTP/1.1\n") }
 
-      it 'uri' do
-        req[:uri].should eq('/')
-      end
+      specify { req[:host].should eq('apple.com') }
+      specify { req[:uri].should  eq('/') }
     end
 
+    describe 'host with port' do
+      let(:request) { create_host_IO("GET /apple.com:3000 HTTP/1.1\n") }
+
+      specify { req[:port].should eq('3000') }
+      specify { req[:host].should eq('apple.com') }
+      specify { req[:url].should  eq('apple.com') }
+      specify { req[:uri].should  eq('/') }
+    end
+
+    describe 'host with path' do
+      let(:request) { create_host_IO("GET /apple.com/google/face/ HTTP/1.1\n") }
+
+      specify { req[:verb].should        eq("GET") }
+      specify { req[:url].should         eq('apple.com/google/face/') }
+      specify { req[:version].should     eq('1.1') }
+      specify { req[:host].should        eq('apple.com') }
+      specify { req[:uri].should         eq('/google/face/') }
+      specify { req[:request_str].should eq("GET /google/face/? HTTP/1.1\r") }
+    end
+  end
+
+  def create_host_IO(host)
+    req = StringIO.new
+    host.split("\n").each do |host|
+      req << "#{host}\n"
+    end
+    req.rewind
+    req
   end
 
   describe '#handle' do
