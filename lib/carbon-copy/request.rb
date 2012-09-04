@@ -34,7 +34,7 @@ module CarbonCopy
       @headers["Host"] = @host
 
       @header_str = @headers.map{|a, b| "#{a}: #{b}"}.join("\r\n")
-      @response = "#{@request_str}\n#{@header_str}\r\n\r\n"
+      @request = "#{@request_str}\n#{@header_str}\r\n\r\n"
 
       self
     end

@@ -18,14 +18,14 @@ module CarbonCopy
     #--------------------------------------------------------------------------
     # Determine final path
     #--------------------------------------------------------------------------
-    def path(parsed)
-      uri = ( parsed.uri == '/' ) ? '' : parsed.uri.gsub("\/", "_")
-      hash = Digest::MD5.new << parsed.header_str
+    def path(request)
+      uri = ( request.uri == '/' ) ? '' : request.uri.gsub("\/", "_")
+      hash = Digest::MD5.new << request.header_str
       #---  Cache directory structure  ----------------------------------------
       """
         #{cache_dir}/
-          #{parsed.host}/
-            #{parsed.verb.downcase}
+          #{request.host}/
+            #{request.verb.downcase}
             #{uri}_
             #{hash}
       """.gsub(/\n|\s/, '')
@@ -34,15 +34,15 @@ module CarbonCopy
     #--------------------------------------------------------------------------
     # Ensure cached directories are created
     #--------------------------------------------------------------------------
-    def verify_cached_dir(parsed)
+    def verify_cached_dir(request)
       Dir.mkdir(cache_dir) unless File.exists?(cache_dir)
-      host_cache = "#{cache_dir}/#{parsed.host}"
+      host_cache = "#{cache_dir}/#{request.host}"
       Dir.mkdir(host_cache) unless File.exists?(host_cache)
     end
 
-    def get_response(parsed)
-      a = TCPSocket.new(parsed.host, parsed.port)
-      a.write(parsed.response)
+    def get_response(request)
+      a = TCPSocket.new(request.host, request.port)
+      a.write(request.request)
 
       #---  Pull request data  ------------------------------------------------
       content_len = nil
@@ -72,15 +72,15 @@ module CarbonCopy
       buff
     end
 
-    def connect(parsed)
-      verify_cached_dir(parsed)
-      cached_path = path(parsed)
+    def connect(request)
+      verify_cached_dir(request)
+      cached_path = path(request)
 
       if File.exists?(cached_path) && !File.zero?(cached_path)
         puts "Getting file #{cached_path} from cache"
         IO.read( cached_path )
       else
-        resp = get_response(parsed)
+        resp = get_response(request)
         File.open( cached_path, 'w' ) do |f|
           f.puts resp
         end
