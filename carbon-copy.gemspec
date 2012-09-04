@@ -14,4 +14,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = CarbonCopy::VERSION
   gem.executables   = ['carbon-copy']
+
+  gem.add_development_dependency "rspec"
+  gem.add_development_dependency "sinatra"
 end
