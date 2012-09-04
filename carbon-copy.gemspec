@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
 
   gem.description = "easily cache them REST calls"
   gem.summary     = "REST cache"
-
+  gem.homepage    = 'https://github.com/rabidpraxis/carbon-copy'
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- spec/*`.split("\n")
   gem.name          = "carbon-copy"
