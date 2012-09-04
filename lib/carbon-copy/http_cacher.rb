@@ -41,7 +41,7 @@ module CarbonCopy
     end
 
     def get_response(parsed)
-      a = TCPSocket.new(parsed.host, 80)
+      a = TCPSocket.new(parsed.host, parsed.port)
       a.write(parsed.response)
 
       #---  Pull request data  ------------------------------------------------
