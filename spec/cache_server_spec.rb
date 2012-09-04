@@ -1,4 +1,4 @@
-require File.expand_path('../../lib/carbon-copy', __FILE__)
+require 'spec_helper'
 require 'open-uri'
 require 'net/http'
 

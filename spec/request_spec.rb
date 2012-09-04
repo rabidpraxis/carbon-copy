@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'carbon-copy/request'
 
 module CarbonCopy
