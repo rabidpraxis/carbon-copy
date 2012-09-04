@@ -1,10 +1,11 @@
 require 'digest/md5'
 
 module CarbonCopy
-  class HTTPCacher
+  class RequestCacher
     attr_reader :base_dir
 
     def initialize(base_dir = Dir.pwd)
+      puts "Loading base dir: #{base_dir}"
       @base_dir = base_dir
     end
 
@@ -12,7 +13,7 @@ module CarbonCopy
     # Setup cache directory
     #--------------------------------------------------------------------------
     def cache_dir
-      "#{base_dir}/.request_cache"
+      "#{@base_dir}/.request_cache"
     end
 
     #--------------------------------------------------------------------------

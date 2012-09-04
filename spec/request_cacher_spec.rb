@@ -3,8 +3,8 @@ require 'digest/md5'
 require 'ostruct'
 
 module CarbonCopy
-describe HTTPCacher do
-  let(:cacher) { HTTPCacher.new }
+describe RequestCacher do
+  let(:cacher) { RequestCacher.new() }
   let(:parsed) {
     a = OpenStruct.new
     a.verb = 'GET'

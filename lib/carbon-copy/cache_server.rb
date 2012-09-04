@@ -1,7 +1,6 @@
 require 'socket'
-require 'open-uri'
 require 'openssl'
-require 'carbon-copy/http_cacher'
+require 'carbon-copy/request_cacher'
 
 module CarbonCopy
   class CacheServer
@@ -17,7 +16,7 @@ module CarbonCopy
     def handle(session)
       begin
         req = Request.new(session).parse
-        resp = HTTPCacher.new.connect(req)
+        resp = RequestCacher.new(cache_dir).connect(req)
         session.write(resp)
         session.close
       rescue => e
