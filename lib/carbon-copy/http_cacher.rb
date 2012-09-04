@@ -19,13 +19,13 @@ module CarbonCopy
     # Determine final path
     #--------------------------------------------------------------------------
     def path(parsed)
-      uri = ( parsed[:uri] == '/' ) ? '' : parsed[:uri].gsub("\/", "_")
-      hash = Digest::MD5.new << parsed[:header_str]
+      uri = ( parsed.uri == '/' ) ? '' : parsed.uri.gsub("\/", "_")
+      hash = Digest::MD5.new << parsed.header_str
       #---  Cache directory structure  ----------------------------------------
       """
         #{cache_dir}/
-          #{parsed[:host]}/
-            #{parsed[:verb].downcase}
+          #{parsed.host}/
+            #{parsed.verb.downcase}
             #{uri}_
             #{hash}
       """.gsub(/\n|\s/, '')
@@ -36,13 +36,13 @@ module CarbonCopy
     #--------------------------------------------------------------------------
     def verify_cached_dir(parsed)
       Dir.mkdir(cache_dir) unless File.exists?(cache_dir)
-      host_cache = "#{cache_dir}/#{parsed[:host]}"
+      host_cache = "#{cache_dir}/#{parsed.host}"
       Dir.mkdir(host_cache) unless File.exists?(host_cache)
     end
 
     def get_response(parsed)
-      a = TCPSocket.new(parsed[:host], 80)
-      a.write(parsed[:response])
+      a = TCPSocket.new(parsed.host, 80)
+      a.write(parsed.response)
 
       #---  Pull request data  ------------------------------------------------
       content_len = nil
