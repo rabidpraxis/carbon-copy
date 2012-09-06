@@ -1,6 +1,7 @@
 require 'socket'
 require 'openssl'
 require 'carbon-copy/request_cacher'
+require 'carbon-copy/request'
 
 module CarbonCopy
   class CacheServer
