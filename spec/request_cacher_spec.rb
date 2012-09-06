@@ -4,7 +4,7 @@ require 'ostruct'
 
 module CarbonCopy
 describe RequestCacher do
-  let(:cacher) { RequestCacher.new() }
+  let(:cacher) { RequestCacher.new('') }
   let(:parsed) {
     a = OpenStruct.new
     a.verb = 'GET'
