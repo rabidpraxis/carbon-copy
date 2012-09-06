@@ -4,25 +4,20 @@ module CarbonCopy
   class RequestCacher
     attr_reader :base_dir
 
-    def initialize(base_dir = Dir.pwd)
-      puts "Loading base dir: #{base_dir}"
+    def initialize(base_dir)
       @base_dir = base_dir
     end
 
-    #--------------------------------------------------------------------------
     # Setup cache directory
-    #--------------------------------------------------------------------------
     def cache_dir
       "#{@base_dir}/.request_cache"
     end
 
-    #--------------------------------------------------------------------------
     # Determine final path
-    #--------------------------------------------------------------------------
     def path(request)
       uri = ( request.uri == '/' ) ? '' : request.uri.gsub("\/", "_")
       hash = Digest::MD5.new << request.header_str
-      #---  Cache directory structure  ----------------------------------------
+      # Cache directory structure
       """
         #{cache_dir}/
           #{request.host}/
@@ -32,9 +27,7 @@ module CarbonCopy
       """.gsub(/\n|\s/, '')
     end
 
-    #--------------------------------------------------------------------------
     # Ensure cached directories are created
-    #--------------------------------------------------------------------------
     def verify_cached_dir(request)
       Dir.mkdir(cache_dir) unless File.exists?(cache_dir)
       host_cache = "#{cache_dir}/#{request.host}"
@@ -45,7 +38,7 @@ module CarbonCopy
       a = TCPSocket.new(request.host, request.port)
       a.write(request.request)
 
-      #---  Pull request data  ------------------------------------------------
+      # Pull request data
       content_len = nil
       buff = ""
       loop do
@@ -57,7 +50,7 @@ module CarbonCopy
         break if line.strip.empty?
       end
 
-      #---  Pull response  ----------------------------------------------------
+      # Pull response
       if content_len
         buff += a.read(content_len)
       else

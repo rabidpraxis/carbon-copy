@@ -3,7 +3,7 @@ require 'open-uri'
 module CarbonCopy
   class Request
     attr_accessor :verb, :host, :port, :path, :version, :url, :uri,
-      :request_str, :headers, :header_str, :response
+      :request_str, :headers, :header_str, :request
 
     def initialize(session)
       @session = session
