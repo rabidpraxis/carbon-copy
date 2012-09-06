@@ -5,9 +5,14 @@ require 'carbon-copy/request_cacher'
 module CarbonCopy
   class CacheServer
 
-    def run(port)
-      webserver = TCPServer.new('127.0.0.1', port)
-      puts "Running Carbon Copy on localhost port #{port}"
+    def initialize(port, request_cacher)
+      @port           = port
+      @request_cacher = request_cacher
+    end
+
+    def run
+      webserver = TCPServer.new('127.0.0.1', @port)
+      puts "Running Carbon Copy on localhost port #{@port}"
       while (session = webserver.accept)
         Thread.new(session, &method(:handle))
       end
@@ -15,9 +20,10 @@ module CarbonCopy
 
     def handle(session)
       begin
-        req = Request.new(session).parse
-        resp = RequestCacher.new(cache_dir).connect(req)
-        session.write(resp)
+        request = Request.new(session)
+        request.parse
+        response = @request_cacher.connect(request)
+        session.write(response)
         session.close
       rescue => e
         p e.message
