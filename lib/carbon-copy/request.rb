@@ -15,7 +15,7 @@ module CarbonCopy
       #---  Initial host/uri information  -------------------------------------
       @verb    = request.slice!(/^\w+\s/).strip
       @host    = request.slice!(/^\/[^\/: ]+/)[1..-1]
-      @port    = request.slice!(/^:(\S+)/)
+      @port    = request.slice!(/^:(\d+)/)
 
       @port    = ( @port.nil? ) ? '80' : @port[1..-1] # Remove the colon
 

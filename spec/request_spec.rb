@@ -46,6 +46,15 @@ describe Request do
       specify { rs.uri.should  eq('/') }
     end
 
+    describe 'host with port and path' do
+      let(:request) { create_host_IO("GET /apple.com:18/awesome HTTP/1.1\n") }
+
+      specify { rs.port.should eq('18') }
+      specify { rs.host.should eq('apple.com') }
+      specify { rs.url.should  eq('apple.com/awesome') }
+      specify { rs.uri.should  eq('/awesome') }
+    end
+
     describe 'host with get string' do
       let(:request) { create_host_IO("POST /fazebook.com/google?p=test HTTP/1.1\n") }
 
