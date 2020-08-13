@@ -1,4 +1,5 @@
-require 'digest/md5'
+require "digest/md5"
+require "fileutils"
 
 module CarbonCopy
   class RequestCacher
@@ -15,7 +16,7 @@ module CarbonCopy
 
     # Determine final path
     def path(request)
-      uri = ( request.uri == '/' ) ? '' : request.uri.gsub("\/", "_")
+      uri = request.uri == "/" ? "" : request.uri.tr("\/", "_")
       hash = Digest::MD5.new << request.header_str
       # Cache directory structure
       """
@@ -24,14 +25,14 @@ module CarbonCopy
             #{request.verb.downcase}
             #{uri}_
             #{hash}
-      """.gsub(/\n|\s/, '')
+      """.gsub(/\n|\s/, "")
     end
 
     # Ensure cached directories are created
     def verify_cached_dir(request)
-      Dir.mkdir(cache_dir) unless File.exists?(cache_dir)
+      FileUtils.mkdir_p(cache_dir) unless File.exist?(cache_dir)
       host_cache = "#{cache_dir}/#{request.host}"
-      Dir.mkdir(host_cache) unless File.exists?(host_cache)
+      FileUtils.mkdir_p(host_cache) unless File.exist?(host_cache)
     end
 
     def get_response(request)
@@ -70,12 +71,12 @@ module CarbonCopy
       verify_cached_dir(request)
       cached_path = path(request)
 
-      if File.exists?(cached_path) && !File.zero?(cached_path)
+      if File.exist?(cached_path) && !File.zero?(cached_path)
         puts "Getting file #{cached_path} from cache"
-        IO.read( cached_path )
+        IO.read(cached_path)
       else
         resp = get_response(request)
-        File.open( cached_path, 'w' ) do |f|
+        File.open(cached_path, "w") do |f|
           f.puts resp
         end
         resp
