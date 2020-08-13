@@ -55,7 +55,7 @@ task release: [:spec, :build] do
     exit!
   end
   sh "git commit --allow-empty -a -e -m 'Release #{VERSION}'"
-  sh "git tag v#{VERSION}"
+  sh "git tag -f v#{VERSION}"
   sh "git push origin master"
   sh "git push origin v#{VERSION}"
   sh "gem push pkg/#{GEM_FILE}"

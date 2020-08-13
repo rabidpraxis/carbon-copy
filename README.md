@@ -1,6 +1,6 @@
 # Carbon Copy - Easily cache them REST calls
 
-We created Carbon Copy to allow for quick front end (or back end) development by
+Carbon Copy allows quick front end (or back end) development by
 caching REST responses.
 
 ### How it works
