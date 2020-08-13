@@ -12,7 +12,7 @@ require 'carbon-copy/request_cacher'
 #
 
 module CarbonCopy
-  VERSION = '0.1.1'
+  VERSION = '0.1.2'
 
   # connect all teh pieces
   class CarbonCopy
